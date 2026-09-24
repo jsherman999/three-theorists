@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Three Theorists</title>
+  <meta name="description" content="Ask a question about consciousness and hear it answered, in plain language, by three schools of thought: body and homeostasis, the physical substrate, and sustained recurrent dynamics.">
+  <meta name="color-scheme" content="light dark">
+  <!-- Keys live in this page, so it may only talk to the four AI providers (and load its fonts). -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com https://openrouter.ai; object-src 'none'; base-uri 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,600;0,700;1,400&family=Atkinson+Hyperlegible+Mono:wght@400;600&display=swap">
+  <link rel="stylesheet" href="css/app.css?v=2">
+  <script type="module" src="js/app.js?v=2"></script>
+</head>
+<body>
+  <a class="skip" href="#composer-input">Skip to the question box</a>
+
+  <header class="masthead">
+    <div class="brand">
+      <p class="eyebrow">A panel on consciousness</p>
+      <h1>Three Theorists</h1>
+      <p class="tagline">Ask one question about the mind. Hear it answered in plain language by three schools of thought that disagree about where consciousness comes from.</p>
+    </div>
+    <button class="connection" id="connection" type="button" aria-haspopup="dialog">
+      <span class="connection-dot" aria-hidden="true"></span>
+      <span class="connection-text">
+        <span class="connection-label" id="connection-label">Connect a model</span>
+        <span class="connection-detail" id="connection-detail">Add an API key to start</span>
+      </span>
+      <svg class="gear" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm8.3 4.6-.1-2.2 2-1.5-2-3.5-2.4.9a8 8 0 0 0-1.9-1.1L15.5 3h-4l-.4 2.7c-.7.3-1.3.6-1.9 1.1l-2.4-.9-2 3.5 2 1.5a7.9 7.9 0 0 0 0 2.2l-2 1.5 2 3.5 2.4-.9c.6.5 1.2.8 1.9 1.1l.4 2.7h4l.4-2.7c.7-.3 1.3-.6 1.9-1.1l2.4.9 2-3.5-2-1.5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+    </button>
+  </header>
+
+  <section class="panel" aria-label="The panelists" id="panel"></section>
+
+  <main class="thread" id="thread"></main>
+  <p class="visually-hidden" id="announcer" role="status" aria-live="polite"></p>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <form class="composer" id="composer" autocomplete="off">
+    <div class="composer-inner">
+      <label class="visually-hidden" for="composer-input">Your question for the panel</label>
+      <textarea id="composer-input" rows="2" maxlength="2000" placeholder="Ask the panel anything about consciousness…"></textarea>
+      <div class="composer-row">
+        <fieldset class="who" id="who">
+          <legend class="visually-hidden">Who answers</legend>
+        </fieldset>
+        <button class="tune-toggle" id="tune-toggle" type="button" aria-expanded="false" aria-controls="tuning" aria-label="Answer length and level">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="16" cy="7" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="10" cy="17" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        </button>
+        <div class="tuning" id="tuning">
+          <fieldset class="segmented" id="length">
+            <legend class="visually-hidden">Answer length</legend>
+          </fieldset>
+          <label class="visually-hidden" for="level">Explain it for</label>
+          <select id="level" class="level"></select>
+        </div>
+        <button class="ask" id="ask" type="submit">Ask<span class="ask-more"> the panel</span></button>
+      </div>
+    </div>
+  </form>
+
+  <dialog class="settings" id="settings" aria-labelledby="settings-title">
+    <form method="dialog" class="settings-form" id="settings-form">
+      <header class="settings-head">
+        <h2 id="settings-title">Connect a model</h2>
+        <button class="icon-button" type="button" id="close-settings" aria-label="Close settings">×</button>
+      </header>
+      <p class="settings-lede" id="settings-lede">All three theorists run on the model you pick here. This page has no server: your key goes only to the provider you choose.</p>
+
+      <label class="field">
+        <span class="field-label">Provider</span>
+        <select id="provider"></select>
+      </label>
+
+      <div class="field">
+        <label class="field-label" for="api-key">API key</label>
+        <div class="key-row">
+          <input id="api-key" type="password" autocomplete="off" spellcheck="false" autocapitalize="off" placeholder="Paste your key">
+          <button class="quiet" type="button" id="toggle-key" aria-pressed="false">Show</button>
+        </div>
+        <p class="field-hint"><span id="key-hint"></span> <a id="keys-link" href="#" target="_blank" rel="noopener noreferrer">Get a key</a></p>
+        <label class="check">
+          <input type="checkbox" id="remember">
+          <span>Remember the key on this device. Otherwise it's forgotten when you close this tab.</span>
+        </label>
+      </div>
+
+      <div class="field">
+        <div class="field-label-row">
+          <label class="field-label" for="model">Model</label>
+          <button class="quiet" type="button" id="load-models">Load models</button>
+        </div>
+        <input id="model-filter" class="model-filter" type="search" placeholder="Filter models" aria-label="Filter models" hidden>
+        <select id="model" disabled>
+          <option value="">Load models to choose one</option>
+        </select>
+        <p class="field-status" id="model-status" role="status"></p>
+      </div>
+
+      <footer class="settings-foot">
+        <button class="quiet danger" type="button" id="forget-key">Forget this key</button>
+        <button class="primary" type="button" id="save-settings">Save</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <template id="empty-template">
+    <section class="empty">
+      <h2>Start with a question</h2>
+      <p class="empty-lede">Pick one of these or write your own. Each theorist answers from their own school, then you can let them respond to each other.</p>
+      <ul class="starters" id="starters"></ul>
+      <p class="fine-print">The theorists are AI models voicing each school of thought, not the scientists themselves. They can be wrong. Treat their answers as a starting point.</p>
+    </section>
+  </template>
+</body>
+</html>
