@@ -18,9 +18,8 @@ const THREAD_KEY = "three-theorists-thread-v1";
 const MODELS_KEY = "three-theorists-models-v1:";
 const MAX_SAVED_ROUNDS = 60;
 
-const INTRO_QUESTION = "Introduce yourselves: what's your theory, in a nutshell?";
-const STARTERS = [
-  INTRO_QUESTION,
+const SAMPLE_QUESTIONS = [
+  "Introduce yourselves: what's your theory, in a nutshell?",
   "Could an AI like ChatGPT or Claude ever be conscious?",
   "Is my dog conscious? What about a fish, or an octopus?",
   "What happens to consciousness under anesthesia?",
@@ -118,6 +117,9 @@ const els = {
   level: $("level"),
   ask: $("ask"),
   tuneToggle: $("tune-toggle"),
+  samples: $("samples"),
+  samplesToggle: $("samples-toggle"),
+  samplesMenu: $("samples-menu"),
   connection: $("connection"),
   connectionLabel: $("connection-label"),
   connectionDetail: $("connection-detail"),
@@ -230,7 +232,7 @@ function setBusy(busy) {
   els.ask.innerHTML = busy ? "Stop" : 'Ask<span class="ask-more"> the panel</span>';
   els.ask.classList.toggle("is-stop", busy);
   els.ask.setAttribute("aria-label", busy ? "Stop the answers" : "Ask the panel");
-  for (const button of document.querySelectorAll("[data-action='story'], [data-action='starter'], [data-action='retry'], [data-action='rebut'], [data-action='clear']")) {
+  for (const button of document.querySelectorAll("[data-action='story'], [data-action='retry'], [data-action='rebut'], [data-action='clear']")) {
     button.disabled = busy;
   }
 }
@@ -271,17 +273,12 @@ function renderThread() {
 
 function emptyState() {
   const fragment = $("empty-template").content.cloneNode(true);
-  const list = fragment.querySelector(".starters");
-  list.innerHTML = STARTERS.map(
-    (question, index) =>
-      `<li><button class="starter${index === 0 ? " is-lead" : ""}" type="button" data-action="starter" data-question="${escapeHtml(question)}">${escapeHtml(question)}</button></li>`,
-  ).join("");
   if (!connection().ready) {
     const callout = document.createElement("p");
     callout.className = "connect-callout";
     callout.innerHTML = `<span>First, connect a model with your own API key from Anthropic, OpenAI, Google or OpenRouter.</span>
       <button class="primary" type="button" data-action="settings">Connect</button>`;
-    fragment.querySelector("h2").after(callout);
+    fragment.querySelector(".empty").prepend(callout);
   }
   return fragment;
 }
@@ -843,6 +840,70 @@ function bindComposer() {
   });
 }
 
+// --------------------------------------------------------------------------
+// Sample questions: a menu above the question box that fills it in
+
+function renderSamples() {
+  els.samplesMenu.innerHTML = SAMPLE_QUESTIONS.map(
+    (question) =>
+      `<li role="none"><button class="sample" type="button" role="menuitem" tabindex="-1" data-question="${escapeHtml(question)}">${escapeHtml(question)}</button></li>`,
+  ).join("");
+}
+
+const sampleItems = () => [...els.samplesMenu.querySelectorAll(".sample")];
+
+function setSamplesOpen(open, { focus = "" } = {}) {
+  els.samplesMenu.hidden = !open;
+  els.samplesToggle.setAttribute("aria-expanded", String(open));
+  els.samples.classList.toggle("is-open", open);
+  if (open && focus === "first") sampleItems()[0]?.focus();
+  if (open && focus === "last") sampleItems().at(-1)?.focus();
+  if (!open && focus === "toggle") els.samplesToggle.focus();
+}
+
+function useSample(question) {
+  setSamplesOpen(false);
+  els.input.value = question;
+  autosize();
+  els.input.focus();
+  els.input.setSelectionRange(question.length, question.length);
+}
+
+function bindSamples() {
+  renderSamples();
+  els.samplesToggle.addEventListener("click", () => setSamplesOpen(els.samplesMenu.hidden, { focus: "first" }));
+  els.samplesToggle.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+      event.preventDefault();
+      setSamplesOpen(true, { focus: event.key === "ArrowUp" ? "last" : "first" });
+    } else if (event.key === "Escape" && !els.samplesMenu.hidden) {
+      event.preventDefault();
+      setSamplesOpen(false);
+    }
+  });
+  els.samplesMenu.addEventListener("click", (event) => {
+    const item = event.target.closest(".sample");
+    if (item) useSample(item.dataset.question);
+  });
+  els.samplesMenu.addEventListener("keydown", (event) => {
+    const items = sampleItems();
+    const index = items.indexOf(document.activeElement);
+    const move = { ArrowDown: index + 1, ArrowUp: index - 1, Home: 0, End: items.length - 1 }[event.key];
+    if (move !== undefined) {
+      event.preventDefault();
+      items[(move + items.length) % items.length]?.focus();
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      setSamplesOpen(false, { focus: "toggle" });
+    } else if (event.key === "Tab") {
+      setSamplesOpen(false);
+    }
+  });
+  document.addEventListener("pointerdown", (event) => {
+    if (!els.samplesMenu.hidden && !els.samples.contains(event.target)) setSamplesOpen(false);
+  });
+}
+
 function bindThread() {
   document.addEventListener("click", (event) => {
     const button = event.target.closest("[data-action]");
@@ -850,11 +911,6 @@ function bindThread() {
     const roundId = button.closest(".round")?.dataset.round;
     const theoristId = button.closest("[data-theorist]")?.dataset.theorist;
     switch (button.dataset.action) {
-      case "starter": {
-        const question = button.dataset.question;
-        ask(question);
-        break;
-      }
       case "story": {
         const theorist = theoristById(theoristId);
         ask(STORY_PROMPT, { participants: [theorist.id], display: `${theorist.name}, tell us your story.` });
@@ -898,6 +954,7 @@ function init() {
   renderControls();
   bindSettings();
   bindComposer();
+  bindSamples();
   bindThread();
   updateConnection();
   renderThread();

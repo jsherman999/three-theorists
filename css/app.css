@@ -187,7 +187,8 @@ h1 {
   font-size: 0.98rem;
 }
 
-.connection {
+.connection,
+.pill {
   flex: none;
   display: flex;
   align-items: center;
@@ -201,8 +202,9 @@ h1 {
   text-align: left;
 }
 
-.connection:hover {
-  border-color: var(--line-strong);
+.connection:hover,
+.pill:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line-strong));
 }
 
 .connection-dot {
@@ -219,14 +221,16 @@ h1 {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 22%, transparent);
 }
 
-.connection-text {
+.connection-text,
+.pill-text {
   display: flex;
   flex-direction: column;
   min-width: 0;
   line-height: 1.2;
 }
 
-.connection-label {
+.connection-label,
+.pill-label {
   font-weight: 700;
   font-size: 0.92rem;
   white-space: nowrap;
@@ -234,7 +238,8 @@ h1 {
   text-overflow: ellipsis;
 }
 
-.connection-detail {
+.connection-detail,
+.pill-detail {
   font-size: 0.78rem;
   color: var(--muted);
   white-space: nowrap;
@@ -247,6 +252,78 @@ h1 {
   width: 18px;
   height: 18px;
   color: var(--muted);
+}
+
+/* ---------------------------------------------------------- Sample questions */
+
+.samples {
+  position: relative;
+  max-width: 1080px;
+  margin: 0 auto 8px;
+}
+
+.pill-icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+}
+
+.pill-chevron {
+  flex: none;
+  width: 11px;
+  height: 11px;
+  margin-left: 2px;
+  color: var(--muted);
+  transition: transform 0.15s;
+}
+
+.samples.is-open .pill-chevron {
+  transform: rotate(180deg);
+}
+
+.samples.is-open .pill {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line-strong));
+}
+
+/* Opens upward: the question box sits at the bottom of the screen. */
+.samples-menu {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+  width: min(560px, 100%);
+  max-height: min(60vh, 440px);
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--surface-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.8);
+}
+
+.sample {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.sample:hover,
+.sample:focus {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.sample:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
 }
 
 /* --------------------------------------------------------------------- Panel */
@@ -462,15 +539,8 @@ button:disabled {
 
 .empty {
   max-width: 880px;
-  margin: 40px auto 0;
+  margin: 32px auto 0;
   text-align: center;
-}
-
-.empty h2 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.35rem;
 }
 
 .connect-callout {
@@ -486,41 +556,8 @@ button:disabled {
   text-align: left;
 }
 
-.starters {
-  list-style: none;
-  margin: 20px 0 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-}
-
-.starter {
-  padding: 10px 16px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--surface);
-  box-shadow: var(--shadow);
-  font-size: 0.95rem;
-  text-align: left;
-  transition: border-color 0.15s, transform 0.15s;
-}
-
-.starter:hover:not(:disabled) {
-  border-color: var(--line-strong);
-  transform: translateY(-1px);
-}
-
-.starter.is-lead {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--on-accent);
-  font-weight: 700;
-}
-
 .fine-print {
-  margin: 30px auto 0;
+  margin: 24px auto 0;
   max-width: 60ch;
   font-size: 0.84rem;
   color: var(--muted);
@@ -967,7 +1004,7 @@ button:disabled {
 .toast {
   position: fixed;
   left: 50%;
-  bottom: 150px;
+  bottom: 210px;
   transform: translateX(-50%);
   z-index: 40;
   padding: 9px 16px;
@@ -1247,7 +1284,16 @@ button:disabled {
   }
 
   .toast {
-    bottom: 140px;
+    bottom: 190px;
+  }
+
+  /* One line on phones to keep the question area short. */
+  .pill {
+    padding: 7px 12px;
+  }
+
+  .pill-detail {
+    display: none;
   }
 }
 
