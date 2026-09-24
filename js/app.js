@@ -281,7 +281,7 @@ function emptyState() {
     callout.className = "connect-callout";
     callout.innerHTML = `<span>First, connect a model with your own API key from Anthropic, OpenAI, Google or OpenRouter.</span>
       <button class="primary" type="button" data-action="settings">Connect</button>`;
-    fragment.querySelector(".empty-lede").after(callout);
+    fragment.querySelector("h2").after(callout);
   }
   return fragment;
 }
@@ -901,9 +901,8 @@ function init() {
   bindThread();
   updateConnection();
   renderThread();
-  if (state.rounds.length) {
-    requestAnimationFrame(() => roundSection(state.rounds[state.rounds.length - 1].id)?.scrollIntoView({ block: "start" }));
-  }
+  const latest = state.rounds.at(-1);
+  if (latest) requestAnimationFrame(() => roundSection(latest.id)?.scrollIntoView({ block: "start" }));
 }
 
 init();

@@ -5,16 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Three Theorists</title>
   <meta name="description" content="Ask a question about consciousness and hear it answered, in plain language, by three schools of thought: body and homeostasis, the physical substrate, and sustained recurrent dynamics.">
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="dark">
   <!-- Keys live in this page, so it may only talk to the four AI providers (and load its fonts). -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com https://openrouter.ai; object-src 'none'; base-uri 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,600;0,700;1,400&family=Atkinson+Hyperlegible+Mono:wght@400;600&display=swap">
-  <link rel="stylesheet" href="css/app.css?v=2">
-  <script type="module" src="js/app.js?v=2"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;650;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,600;0,700;1,400&family=Atkinson+Hyperlegible+Mono:wght@400;600&display=swap">
+  <link rel="stylesheet" href="css/app.css?v=3">
+  <script type="module" src="js/app.js?v=3"></script>
 </head>
 <body>
   <a class="skip" href="#composer-input">Skip to the question box</a>
@@ -23,7 +23,7 @@
     <div class="brand">
       <p class="eyebrow">A panel on consciousness</p>
       <h1>Three Theorists</h1>
-      <p class="tagline">Ask one question about the mind. Hear it answered in plain language by three schools of thought that disagree about where consciousness comes from.</p>
+      <p class="tagline">Ask one question about the mind.</p>
     </div>
     <button class="connection" id="connection" type="button" aria-haspopup="dialog">
       <span class="connection-dot" aria-hidden="true"></span>
@@ -112,7 +112,6 @@
   <template id="empty-template">
     <section class="empty">
       <h2>Start with a question</h2>
-      <p class="empty-lede">Pick one of these or write your own. Each theorist answers from their own school, then you can let them respond to each other.</p>
       <ul class="starters" id="starters"></ul>
       <p class="fine-print">The theorists are AI models voicing each school of thought, not the scientists themselves. They can be wrong. Treat their answers as a starting point.</p>
     </section>

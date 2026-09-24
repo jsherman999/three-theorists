@@ -1,72 +1,67 @@
-/* Three Theorists: chart-recorder paper with one ink per theorist. */
+/* Three Theorists: a night console. Each theorist gets a tinted panel of its own. */
 
 :root {
-  --paper: #ecf1ec;
-  --grid: rgba(52, 104, 80, 0.085);
-  --card: #fbfcf9;
-  --card-raised: #ffffff;
-  --ink: #1b2624;
-  --muted: #56655f;
-  --line: #cbd8cf;
-  --line-strong: #a9bcb0;
-  --wash: rgba(27, 38, 36, 0.05);
-  --shadow: 0 1px 0 rgba(27, 38, 36, 0.04), 0 8px 24px -12px rgba(27, 38, 36, 0.22);
-  --body-ink: #b42f3c;
-  --substrate-ink: #2b5687;
-  --loop-ink: #6e43a6;
-  --ok: #2f7a4f;
-  --warn: #a8641a;
-  --danger: #a3282f;
+  --page-top: #1c2537;
+  --page: #141a26;
+  --surface: #1a2233;
+  --surface-raised: #1e283b;
+  --field: #121927;
+  --card: var(--surface);
+  --ink: #e6ebf2;
+  --muted: #9aa6b8;
+  --line: #2a364c;
+  --line-strong: #3a4862;
+  --wash: rgba(230, 235, 242, 0.06);
+  --shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 18px 40px -24px rgba(0, 0, 0, 0.75);
+  --accent: #a8e6c1;
+  --on-accent: #10261a;
 
-  --font-display: "Gloock", "Iowan Old Style", Georgia, serif;
+  /* Theorist inks: names of schools, dots, list markers, the typing caret. */
+  --body-ink: #a6dcb4;
+  --substrate-ink: #a9c1f2;
+  --loop-ink: #f2b07c;
+
+  --ok: #8fdcb0;
+  --warn: #f0c27a;
+  --danger: #f29098;
+
+  --font-display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
   --font-body: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, sans-serif;
   --font-mono: "Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
-  --radius: 14px;
+  --radius: 12px;
   --gutter: clamp(16px, 3vw, 32px);
-  color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #0f1513;
-    --grid: rgba(150, 205, 175, 0.05);
-    --card: #161e1b;
-    --card-raised: #1b2521;
-    --ink: #e3ebe6;
-    --muted: #9aaba3;
-    --line: #2a3833;
-    --line-strong: #3b4d46;
-    --wash: rgba(227, 235, 230, 0.06);
-    --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 10px 28px -14px rgba(0, 0, 0, 0.7);
-    --body-ink: #f07a83;
-    --substrate-ink: #7fa9dc;
-    --loop-ink: #b996ea;
-    --ok: #6cc592;
-    --warn: #e0a55a;
-    --danger: #f08a8f;
-    color-scheme: dark;
-  }
-}
-
-:root[data-theme="dark"] {
-  --paper: #0f1513;
-  --grid: rgba(150, 205, 175, 0.05);
-  --card: #161e1b;
-  --card-raised: #1b2521;
-  --ink: #e3ebe6;
-  --muted: #9aaba3;
-  --line: #2a3833;
-  --line-strong: #3b4d46;
-  --wash: rgba(227, 235, 230, 0.06);
-  --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 10px 28px -14px rgba(0, 0, 0, 0.7);
-  --body-ink: #f07a83;
-  --substrate-ink: #7fa9dc;
-  --loop-ink: #b996ea;
-  --ok: #6cc592;
-  --warn: #e0a55a;
-  --danger: #f08a8f;
   color-scheme: dark;
+}
+
+/* Panel fills: a two-tone gradient, a soft glow from the top edge, faint grid lines, hairline edges. */
+[data-theorist="body"] {
+  --fill-top: #243026;
+  --fill-bottom: #172019;
+  --glow: rgba(150, 205, 160, 0.15);
+  --edge: rgba(160, 210, 175, 0.2);
+  --grid-line: rgba(185, 225, 195, 0.05);
+}
+
+[data-theorist="substrate"] {
+  --fill-top: #222c45;
+  --fill-bottom: #171f35;
+  --glow: rgba(140, 170, 235, 0.15);
+  --edge: rgba(150, 175, 230, 0.22);
+  --grid-line: rgba(180, 200, 240, 0.05);
+}
+
+[data-theorist="loop"] {
+  --fill-top: #37261a;
+  --fill-bottom: #23170f;
+  --glow: rgba(240, 150, 80, 0.15);
+  --edge: rgba(240, 170, 120, 0.22);
+  --grid-line: rgba(245, 200, 160, 0.05);
+}
+
+/* The heartbeat line in the body emblem is cut out of the panel color. */
+[data-theorist] {
+  --card: var(--fill-bottom);
 }
 
 *,
@@ -82,12 +77,11 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: var(--paper);
+  background-color: var(--page);
   background-image:
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 28px 28px;
-  background-position: -1px -1px;
+    radial-gradient(1100px 520px at 50% -160px, rgba(120, 150, 210, 0.13), transparent 70%),
+    linear-gradient(180deg, var(--page-top), var(--page) 560px);
+  background-repeat: no-repeat;
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 1rem;
@@ -109,7 +103,7 @@ button {
 }
 
 :focus-visible {
-  outline: 2.5px solid var(--ink);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 6px;
 }
@@ -135,8 +129,8 @@ a {
   position: absolute;
   left: 12px;
   top: -60px;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--accent);
+  color: var(--on-accent);
   padding: 8px 12px;
   border-radius: 8px;
   z-index: 50;
@@ -152,7 +146,7 @@ a {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: clamp(24px, 5vw, 56px) var(--gutter) 20px;
+  padding: clamp(20px, 3.5vw, 36px) var(--gutter) 18px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -165,32 +159,32 @@ a {
 .answer-school,
 .field-label,
 .meta {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.09em;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .eyebrow {
-  margin: 0 0 10px;
+  margin: 0 0 6px;
   color: var(--muted);
 }
 
 h1 {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(2.6rem, 7vw, 4.6rem);
-  line-height: 0.95;
-  letter-spacing: -0.015em;
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
 }
 
 .tagline {
-  margin: 14px 0 0;
+  margin: 6px 0 0;
   max-width: 54ch;
   color: var(--muted);
-  font-size: 1.05rem;
+  font-size: 0.98rem;
 }
 
 .connection {
@@ -200,8 +194,8 @@ h1 {
   gap: 10px;
   max-width: 320px;
   padding: 9px 12px 9px 14px;
-  background: var(--card);
-  border: 1px solid var(--line);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
   border-radius: 999px;
   box-shadow: var(--shadow);
   text-align: left;
@@ -273,9 +267,12 @@ h1 {
   flex-direction: column;
   gap: 14px;
   padding: 20px 20px 18px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-top: 4px solid var(--ink-color);
+  background:
+    radial-gradient(120% 75% at 50% 0%, var(--glow), transparent 72%),
+    linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 100% 30px,
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 30px 100%,
+    linear-gradient(180deg, var(--fill-top), var(--fill-bottom));
+  border: 1px solid var(--edge);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
@@ -300,9 +297,9 @@ h1 {
 .theorist-name {
   margin: 4px 0 0;
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 1.6rem;
-  line-height: 1.1;
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.2;
 }
 
 .theorist-thesis {
@@ -313,14 +310,14 @@ h1 {
 
 .theorist-blurb {
   margin: 8px 0 0;
-  color: var(--muted);
+  color: color-mix(in srgb, var(--ink) 72%, transparent);
   font-size: 0.93rem;
 }
 
 .theorist-influences {
   margin: 12px 0 0;
   font-size: 0.8rem;
-  color: var(--muted);
+  color: color-mix(in srgb, var(--ink) 62%, transparent);
 }
 
 .theorist-influences strong {
@@ -330,16 +327,16 @@ h1 {
 
 .story {
   padding: 7px 12px;
-  border: 1px solid color-mix(in srgb, var(--ink-color) 45%, var(--line));
+  border: 1px solid color-mix(in srgb, var(--ink-color) 50%, transparent);
   border-radius: 999px;
-  background: transparent;
+  background: rgba(0, 0, 0, 0.12);
   color: var(--ink-color);
   font-weight: 700;
   font-size: 0.86rem;
 }
 
 .story:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--ink-color) 9%, transparent);
+  background: color-mix(in srgb, var(--ink-color) 14%, transparent);
 }
 
 .story-wrap {
@@ -472,14 +469,8 @@ button:disabled {
 .empty h2 {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(1.7rem, 3.4vw, 2.2rem);
-}
-
-.empty-lede {
-  margin: 8px auto 0;
-  max-width: 56ch;
-  color: var(--muted);
+  font-weight: 700;
+  font-size: 1.35rem;
 }
 
 .connect-callout {
@@ -490,14 +481,14 @@ button:disabled {
   padding: 10px 12px 10px 16px;
   border: 1px dashed var(--line-strong);
   border-radius: 12px;
-  background: var(--card);
+  background: var(--surface);
   font-size: 0.95rem;
   text-align: left;
 }
 
 .starters {
   list-style: none;
-  margin: 26px 0 0;
+  margin: 20px 0 0;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
@@ -509,7 +500,7 @@ button:disabled {
   padding: 10px 16px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: var(--card);
+  background: var(--surface);
   box-shadow: var(--shadow);
   font-size: 0.95rem;
   text-align: left;
@@ -522,9 +513,9 @@ button:disabled {
 }
 
 .starter.is-lead {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
   font-weight: 700;
 }
 
@@ -550,8 +541,8 @@ button:disabled {
 .round-q {
   max-width: 900px;
   margin-bottom: 16px;
-  padding-left: 16px;
-  border-left: 3px solid var(--ink);
+  padding-left: 14px;
+  border-left: 3px solid var(--accent);
 }
 
 .round-label {
@@ -562,8 +553,9 @@ button:disabled {
 .round-text {
   margin: 4px 0 0;
   font-family: var(--font-display);
-  font-size: clamp(1.35rem, 2.6vw, 1.85rem);
-  line-height: 1.2;
+  font-weight: 650;
+  font-size: clamp(1.1rem, 1.9vw, 1.4rem);
+  line-height: 1.3;
   overflow-wrap: anywhere;
 }
 
@@ -572,7 +564,7 @@ button:disabled {
 }
 
 .round-rebuttal .round-text {
-  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
   color: var(--muted);
 }
 
@@ -596,9 +588,10 @@ button:disabled {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-top: 3px solid var(--ink-color);
+  background:
+    radial-gradient(120% 50% at 50% 0%, var(--glow), transparent 72%),
+    linear-gradient(180deg, var(--fill-top), var(--fill-bottom) 70%);
+  border: 1px solid var(--edge);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
@@ -626,7 +619,8 @@ button:disabled {
 
 .answer-name {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-weight: 700;
+  font-size: 1rem;
 }
 
 .answer-school {
@@ -663,7 +657,7 @@ button:disabled {
 
 .md strong {
   font-weight: 700;
-  background: linear-gradient(transparent 62%, color-mix(in srgb, var(--ink-color) 18%, transparent) 62%);
+  background: linear-gradient(transparent 62%, color-mix(in srgb, var(--ink-color) 26%, transparent) 62%);
 }
 
 .md blockquote {
@@ -711,7 +705,7 @@ button:disabled {
   gap: 4px 8px;
   min-height: 44px;
   padding: 6px 12px 10px 18px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--edge);
   margin-top: 6px;
 }
 
@@ -722,6 +716,7 @@ button:disabled {
 .meta {
   flex: 1;
   min-width: 0;
+  font-family: var(--font-mono);
   color: var(--muted);
   font-size: 0.66rem;
   font-weight: 400;
@@ -759,13 +754,13 @@ button:disabled {
   padding: 10px 18px;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
-  background: var(--card);
+  background: var(--surface);
   box-shadow: var(--shadow);
   font-weight: 700;
 }
 
 .rebut:hover:not(:disabled) {
-  border-color: var(--ink);
+  border-color: var(--accent);
 }
 
 .rebut-dots {
@@ -787,17 +782,17 @@ button:disabled {
   z-index: 10;
   width: 100%;
   padding: 0 var(--gutter) max(14px, env(safe-area-inset-bottom));
-  background: linear-gradient(transparent, var(--paper) 22px);
+  background: linear-gradient(transparent, var(--page) 22px);
 }
 
 .composer-inner {
   max-width: 1080px;
   margin: 0 auto;
   padding: 12px;
-  background: var(--card-raised);
+  background: var(--surface-raised);
   border: 1px solid var(--line-strong);
-  border-radius: 18px;
-  box-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.35);
+  border-radius: 16px;
+  box-shadow: 0 18px 44px -18px rgba(0, 0, 0, 0.7);
 }
 
 .composer textarea {
@@ -818,7 +813,7 @@ button:disabled {
 }
 
 .composer-inner:focus-within {
-  border-color: var(--ink);
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--line-strong));
 }
 
 .composer-row {
@@ -883,7 +878,7 @@ button:disabled {
 
 .who-chip:has(input:focus-visible),
 .seg:has(input:focus-visible) {
-  outline: 2.5px solid var(--ink);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -909,15 +904,15 @@ button:disabled {
 }
 
 .seg:has(input:checked) {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 .level {
   padding: 6px 30px 6px 12px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: var(--card-raised) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%2378887f' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 11px center / 10px;
+  background: var(--field) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%239aa6b8' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 11px center / 10px;
   appearance: none;
   font-size: 0.85rem;
   font-weight: 600;
@@ -928,9 +923,9 @@ button:disabled {
   min-width: 132px;
   padding: 10px 18px;
   border: 0;
-  border-radius: 12px;
-  background: var(--ink);
-  color: var(--paper);
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--on-accent);
   font-weight: 700;
 }
 
@@ -962,9 +957,9 @@ button:disabled {
 }
 
 .tune-toggle[aria-expanded="true"] {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
 }
 
 /* --------------------------------------------------------------------- Toast */
@@ -977,8 +972,8 @@ button:disabled {
   z-index: 40;
   padding: 9px 16px;
   border-radius: 999px;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--accent);
+  color: var(--on-accent);
   font-size: 0.9rem;
   font-weight: 600;
   box-shadow: var(--shadow);
@@ -991,14 +986,14 @@ button:disabled {
   max-height: calc(100vh - 32px);
   padding: 0;
   border: 1px solid var(--line-strong);
-  border-radius: 18px;
-  background: var(--card-raised);
+  border-radius: 16px;
+  background: var(--surface-raised);
   color: var(--ink);
   box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.5);
 }
 
 .settings::backdrop {
-  background: rgba(15, 21, 19, 0.45);
+  background: rgba(6, 9, 15, 0.6);
   backdrop-filter: blur(2px);
 }
 
@@ -1018,8 +1013,8 @@ button:disabled {
 .settings-head h2 {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 1.6rem;
+  font-weight: 700;
+  font-size: 1.2rem;
 }
 
 .icon-button {
@@ -1076,8 +1071,8 @@ button:disabled {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--line-strong);
-  border-radius: 10px;
-  background: var(--card);
+  border-radius: 8px;
+  background: var(--field);
 }
 
 .field select:disabled {
@@ -1126,7 +1121,7 @@ button:disabled {
 
 .check input {
   margin-top: 3px;
-  accent-color: var(--ink);
+  accent-color: var(--accent);
 }
 
 .settings-foot {
@@ -1139,9 +1134,9 @@ button:disabled {
 .primary {
   padding: 10px 22px;
   border: 0;
-  border-radius: 10px;
-  background: var(--ink);
-  color: var(--paper);
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--on-accent);
   font-weight: 700;
 }
 
@@ -1167,7 +1162,7 @@ button:disabled {
   }
 
   .theorist-name {
-    font-size: 1.3rem;
+    font-size: 1.15rem;
   }
 
   .theorist-blurb,
