@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import {
   THEORISTS,
   HISTORY_LIMIT,
@@ -117,4 +118,10 @@ test("markdown leaves arithmetic and snake_case alone and continues wrapped list
 
 test("wordCount counts words, not punctuation", () => {
   assert.equal(wordCount("Feeling comes first — it's the body's job."), 7);
+});
+
+test("a theorist's video link points at a file in the repository", () => {
+  const withVideo = THEORISTS.filter((theorist) => theorist.video);
+  assert.deepEqual(withVideo.map((theorist) => theorist.id), ["loop"]);
+  for (const theorist of withVideo) assert.ok(existsSync(new URL(`../${theorist.video}`, import.meta.url)), theorist.video);
 });

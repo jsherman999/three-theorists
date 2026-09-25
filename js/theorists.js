@@ -65,6 +65,8 @@ export const THEORISTS = [
     formal: "Recurrent processing and global workspace theories",
     thesis: "Awareness is an echo that keeps going.",
     influences: ["Victor Lamme", "Bernard Baars", "Stanislas Dehaene"],
+    // A short animated explainer of the school's three ideas (see video/).
+    video: "video/loop-theory.mp4",
     blurb:
       "A first, fast sweep of signals through the brain stays unconscious. Awareness appears when signals loop back between regions and get broadcast brain-wide, like an echo that keeps ringing instead of a single clap.",
     core: [

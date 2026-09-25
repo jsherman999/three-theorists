@@ -419,6 +419,21 @@ h1 {
 .story-wrap {
   margin-top: auto;
   padding-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.story-video {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+.story-icon {
+  width: 10px;
+  height: 10px;
 }
 
 /* ------------------------------------------------------------------ Emblems */
