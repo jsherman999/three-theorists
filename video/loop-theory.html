@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loop Theory Explainer</title>
+  <meta name="description" content="A short animation of what the sustained recurrent dynamics school claims: sustained loops, ignition, and ongoing activity with no input.">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <style>
+    /* The app's two typefaces, bundled so frames render the same offline (SIL OFL, see fonts/OFL.txt). */
+    @font-face { font-family: "Schibsted Grotesk"; font-weight: 400 900; src: url(fonts/schibsted-grotesk.woff2) format("woff2"); }
+    @font-face { font-family: "Atkinson Hyperlegible Next"; font-weight: 200 800; src: url(fonts/atkinson-hyperlegible-next.woff2) format("woff2"); }
+    @font-face { font-family: "Atkinson Hyperlegible Next"; font-style: italic; font-weight: 400; src: url(fonts/atkinson-hyperlegible-next-italic.woff2) format("woff2"); }
+    html, body { margin: 0; height: 100%; background: #0b0f17; }
+    body { display: grid; place-items: center; overflow: hidden; }
+    canvas { display: block; width: min(100vw, 177.78vh); height: auto; aspect-ratio: 16 / 9; }
+    body.render canvas { width: 1920px; height: 1080px; }
+  </style>
+</head>
+<body>
+  <canvas id="stage" width="1920" height="1080" role="img" aria-label="Animation: what the Loop Theory of consciousness claims"></canvas>
+  <script>if (location.search.includes("render")) document.body.classList.add("render");</script>
+  <script type="module" src="loop-theory.js"></script>
+</body>
+</html>

@@ -178,10 +178,17 @@ function renderPanel() {
           <p class="theorist-influences">Draws on ${theorist.influences.map((name) => `<strong>${escapeHtml(name)}</strong>`).join(", ")}</p>
           <div class="story-wrap">
             <button class="story" type="button" data-action="story" data-theorist="${theorist.id}">Hear their story</button>
+            ${theorist.video ? videoLink(theorist.video) : ""}
           </div>
         </div>
       </article>`,
   ).join("");
+}
+
+function videoLink(href) {
+  return `<a class="story story-video" href="${escapeHtml(href)}" target="_blank" rel="noopener">
+    <svg class="story-icon" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.6v8.8L10.4 6Z" fill="currentColor"/></svg>Watch the video<span class="visually-hidden"> (opens in a new tab)</span>
+  </a>`;
 }
 
 function renderControls() {

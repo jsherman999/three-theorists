@@ -67,6 +67,31 @@ node --test tests/providers.test.mjs tests/theorists.test.mjs
 | `js/markdown.js` | Escaping Markdown renderer |
 | `js/emblems.js` | The three animated emblems |
 
+## Explainer video
+
+[`video/loop-theory.mp4`](video/loop-theory.mp4) is a 100-second animation of what the Loop Theorist's school claims, for someone with no science background. It opens with a clap in an open field and in a stairwell, then walks through the school's three ideas:
+
+- **Sustained loops:** a fast one-way sweep recognizes an apple but nobody sees it; the apple appears once higher regions send signals back down and the activity keeps looping.
+- **Something like ignition:** at a noisy party, voices compete until your name crosses a tipping point and is broadcast to every part of the brain at once.
+- **Ongoing activity with no input:** close your eyes and the brain keeps humming, while a one-pass system sits still between inputs.
+
+| File | What it holds |
+| --- | --- |
+| `video/loop-theory.html`, `video/loop-theory.js` | The animation, drawn on a canvas. Every frame is a function of time. |
+| `video/timeline.js` | When each event happens, shared by the picture and the sound |
+| `video/soundtrack.mjs` | The soundtrack, synthesized from scratch |
+| `video/render.mjs` | Captures every frame with headless Chromium and encodes the MP4 |
+| `video/fonts/` | The app's two typefaces, bundled so renders don't depend on the network (SIL OFL) |
+
+To watch the animation live, serve the repository (see Development) and open http://localhost:8424/video/loop-theory.html. Space pauses, the arrow keys skip five seconds, and `?t=50` starts 50 seconds in.
+
+To render the MP4 you need Playwright (`npm i -g playwright`) and an ffmpeg with libx264, on the PATH or at `$FFMPEG`:
+
+```bash
+node video/render.mjs                    # writes video/loop-theory.mp4
+node video/render.mjs --stills 12,55     # PNG stills for checking frames
+```
+
 ## Deploying to GitHub Pages
 
 The site is served straight from the repository root. In the repository's **Settings → Pages**, choose **Deploy from a branch**, then `main` and `/ (root)`. The `.nojekyll` file stops Pages from processing the files. After changing CSS or JS, bump the `?v=` query strings in `index.html` so browsers fetch the new files.
